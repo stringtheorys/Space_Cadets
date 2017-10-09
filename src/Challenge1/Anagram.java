@@ -25,7 +25,7 @@ public class Anagram {
             "Português (Portuguese)", "Svenska (Swedish)", "Names (proper names only)"
     };
 
-    private String word = "";
+    private String word = "testing";
     private int languagePos = 0;
     private int maxAnagrams = 500;
     private int maxNumWords = 20;
@@ -36,7 +36,7 @@ public class Anagram {
     private boolean repeatOccurrences = true;
 
     public static void main(String[] args) {
-        new Anagram();
+        new Anagram().findAnagrams();
     }
 
     public Anagram() {
@@ -45,9 +45,10 @@ public class Anagram {
 
     public void findAnagrams() {
 
+        System.out.println("Welcome to the anagram generator");
         String repeat = "Y";
         while (repeat.equalsIgnoreCase("Y")) {
-            printOptions();
+            changeOptions();
 
             System.out.print("Do you want to find a new anagram (Y/N) :");
             repeat = scanner.nextLine();
@@ -58,6 +59,7 @@ public class Anagram {
     }
 
     private void printOptions() {
+        System.out.println("\n");
         System.out.println("Options");
         System.out.println("1. Word :" + word);
         System.out.println("2. Language :" + validLanguages[languagePos]);
@@ -68,9 +70,13 @@ public class Anagram {
         System.out.println("7. Maximum number of letters per word :" + maxLetters);
         System.out.println("8. Repeat Occurrences of a word :" + repeatOccurrences);
         System.out.println("0. Get Anagrams");
+    }
+
+    private void changeOptions() {
 
         int input = -1;
-        while (input != 0) {
+        do {
+            printOptions();
             System.out.print("Please enter the number to change an option :");
             String userInput = scanner.nextLine();
             System.out.println();
@@ -99,9 +105,9 @@ public class Anagram {
                     userInput = scanner.nextLine();
 
                     try {
-                        languagePos = Integer.parseInt(userInput);
+                        languagePos = Integer.parseInt(userInput)-1;
 
-                        if (languagePos < 0 || languagePos > validLanguages.length) {
+                        if (languagePos < 0 || languagePos >= validLanguages.length) {
                             languagePos = 1;
                             System.out.println("Invalid language position");
                         }
@@ -188,13 +194,18 @@ public class Anagram {
                     break;
 
                 case(0):
-                    ArrayList<String> anagrams = getAnagrams();
-                    System.out.println("List of anagrams");
-                    if (anagrams.size() == 0) {
-                        System.out.println("No anagram were generated");
-                    }
-                    for (String anagram : anagrams){
-                        System.out.println(anagram);
+                    if (word.equals("")) {
+                        System.out.println("You must enter a word to search");
+                    } else {
+                        ArrayList<String> anagrams = getAnagrams();
+                        System.out.println("List of anagrams");
+                        if (anagrams.size() == 0) {
+                            System.out.println("No anagram were generated");
+                        } else {
+                            for (String anagram : anagrams) {
+                                System.out.println(anagram);
+                            }
+                        }
                     }
                     break;
 
@@ -202,7 +213,7 @@ public class Anagram {
                     System.out.println("Please enter on of the valid option numbers");
                     break;
             }
-        }
+        } while (input != 0);
     }
 
 
@@ -210,37 +221,23 @@ public class Anagram {
         ArrayList<String> anagrams = new ArrayList<>();
 
         String webpage = getWebPage();
-        String[] lines = webpage.split("\n");
+        String[] lines = webpage.split("<br>");
 
-        boolean foundStart = false;
-        for (int pos = 0; pos < lines.length; pos++) {
-            if (foundStart) {
-                if (lines[pos].substring(0, 3).equals("<b>")) {
-                    foundStart = true;
-                    // Cheat as the next line doesnt have a <br> at the start
-                    anagrams.add(lines[pos++]);
-                }
-            } else {
-                if (lines[pos].equals("<br><br>")) {
-                    break;
-                } else {
-                    anagrams.add(lines[pos].substring(4));
-                }
-            }
+        for (int pos = 6; pos < lines.length-2; pos++) {
+            anagrams.add(lines[pos]);
         }
-
         return anagrams;
     }
 
     private String getWebPage() {
-        // https://new.wordsmith.org/anagram/anagram.cgi?anagram=mark+is+amazing&language=english&t=500&d=18&include=&exclude=&n=1&m=16&a=y&l=n&q=n&k=1
-        String searchUrl = "https://new.wordsmith.org/anagram/anagram.cgi?anagram="
+
+        String searchUrl = "https://new.wordsmith.org/anagram/anagram.cgi?anagram=+"
                 + word.replace(" ", "+")
                 + "&language=" + languages[languagePos]       // Language
                 + "&t=" + maxAnagrams           // Max number of anagrams
                 + "&d=" + maxNumWords           // Max Number of words
                 + "&include=" + mustInclude     // Must Include
-                + "exclude=" + mustExclude      // Must Exclude
+                + "&exclude=" + mustExclude      // Must Exclude
                 + "&n=" + minLetters            // Min Letters in a word
                 + "&m=" + maxLetters            // Max Letters in a word
                 + "&a=y"                        // Repeat occurrences
