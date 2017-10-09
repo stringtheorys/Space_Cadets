@@ -25,47 +25,58 @@ public class Wiki {
 
     public void searchWikipedia() {
 
-        int searchNum = 0;
+        String researchPages;
+
         do {
-            System.out.print("Please enter something to search on wikipedia :");
-            String userInput = scanner.nextLine();
-            System.out.println();
-            String searchUrl = "https://en.wikipedia.org/w/index.php?search=" +
-                    userInput.replace(" ", "+") +
-                    "&title=Special:Search&profile=default&fulltext=1&searchToken=2dxrf0t4b14r825vf9b9a6cx6";
-
-            HashMap<String, String> searchOptions = parseSearchWebpage(searchUrl);
-
-            int pos = 1;
-            System.out.println("Wiki pages to search");
-            if (searchOptions.size() == 0) {
-                System.out.println("No Wiki pages");
-            } else {
-                ArrayList<String> searchUrls = new ArrayList<>();
-
-                for (String searchName : searchOptions.keySet()) {
-                    System.out.println(pos++ + ". " + searchName);
-                    searchUrls.add(searchOptions.get(searchName));
-                }
-                System.out.println("0. Change search name");
-
-                System.out.print("Choose wiki page :");
-                userInput = scanner.nextLine();
+            int searchNum = 0;
+            do {
+                System.out.print("Please enter something to search on wikipedia :");
+                String userInput = scanner.nextLine();
                 System.out.println();
+                String searchUrl = "https://en.wikipedia.org/w/index.php?search=" +
+                        userInput.replace(" ", "+") +
+                        "&title=Special:Search&profile=default&fulltext=1&searchToken=2dxrf0t4b14r825vf9b9a6cx6";
 
-                try {
-                    searchNum = Integer.parseInt(userInput);
+                HashMap<String, String> searchOptions = parseSearchWebpage(searchUrl);
 
-                    if (searchNum > 0 && searchNum < pos) {
-                        printSearchWebpage((String) searchUrls.get(searchNum-1));
-                    } else if (searchNum != 0){
-                        System.out.println("Please enter one of the search options");
+                int pos = 1;
+                System.out.println("Wiki pages to search");
+                if (searchOptions.size() == 0) {
+                    System.out.println("No Wiki pages");
+                } else {
+                    ArrayList<String> searchUrls = new ArrayList<>();
+
+                    for (String searchName : searchOptions.keySet()) {
+                        System.out.println(pos++ + ". " + searchName);
+                        searchUrls.add(searchOptions.get(searchName));
                     }
-                } catch(NumberFormatException e) {
-                    System.out.println("Please enter an integer");
+                    System.out.println("0. Change search name");
+
+                    System.out.print("Choose wiki page :");
+                    userInput = scanner.nextLine();
+                    System.out.println();
+
+                    try {
+                        searchNum = Integer.parseInt(userInput);
+
+                        if (searchNum > 0 && searchNum < pos) {
+                            printSearchWebpage((String) searchUrls.get(searchNum - 1));
+                        } else if (searchNum != 0) {
+                            System.out.println("Please enter one of the search options");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Please enter an integer");
+                    }
                 }
-            }
-        } while(searchNum == 0);
+            } while (searchNum == 0);
+
+            System.out.print("Would you like to search another wiki page (Y/N) :");
+            researchPages = scanner.nextLine();
+            System.out.println();
+
+        } while (researchPages.equalsIgnoreCase("y"));
+
+        System.out.println("Thank you for using my program");
     }
 
     private HashMap<String, String> parseSearchWebpage(String searchUrl) {
