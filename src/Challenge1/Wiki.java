@@ -60,7 +60,7 @@ public class Wiki {
                         searchNum = Integer.parseInt(userInput);
 
                         if (searchNum > 0 && searchNum < pos) {
-                            printSearchWebpage((String) searchUrls.get(searchNum - 1));
+                            printSearchWebpage(searchUrls.get(searchNum - 1));
                         } else if (searchNum != 0) {
                             System.out.println("Please enter one of the search options");
                         }
@@ -79,14 +79,19 @@ public class Wiki {
         System.out.println("Thank you for using my program");
     }
 
+    // Parse the search url to find all of the search options
     private HashMap<String, String> parseSearchWebpage(String searchUrl) {
         String webpage = getWebpage(searchUrl);
 
+        // Find the part of the page between the search results
         String searchPages = webpage.substring(webpage.indexOf("mw-search-result-heading"), webpage.indexOf("mw-search-pager-bottom"));
+        // Each search entry starts with <a
         String[] searchLines = searchPages.split("<a");
 
         int searchPos = 1;
         HashMap<String, String> wikiPages = new HashMap<>();
+
+        // Find the max number of searchs or all search, which comes first
         while (searchPos < searchLines.length && searchPos < maxSearchs) {
 
             String line = searchLines[searchPos];
@@ -97,8 +102,11 @@ public class Wiki {
 
             int pos = 0;
             while (pos < linesThings.length) {
+                // Find the url title
                 if (linesThings[pos].equals(" title=")) {
+                    // Set the title to the next element in array
                     title = linesThings[pos+1];
+                    // Break as we dont need any more info
                     break;
                 } else if (linesThings[pos].equals(" href=")) {
                     url = linesThings[pos+1];
@@ -118,27 +126,38 @@ public class Wiki {
         return wikiPages;
     }
 
+    // Prints the information card from the right of the wiki page
     private void printSearchWebpage(String searchUrl) {
 
+        // Gets the webpage
         String webpage = getWebpage(searchUrl);
 
+        // Gets the start position of the webpage with the infobox
         int startPos = webpage.indexOf("<table class=\"infobox vcard\" style=\"width:22em\">");
+        // If start position returns -1 then the search parse doesnt exist in the string
         if (startPos == -1) {
             System.out.println("Sorry this page has the wrong formatting");
+            // End program
             return;
         }
+        // Gets the end position
         int endPos = webpage.indexOf("</table>");
+        // Reduces the size of webpage to get information to just the information card
         String infoCard = webpage.substring(startPos, endPos);
 
+        // Each line of the information card is split by <tr>
         String[] infoLines = infoCard.split("<tr>");
-        System.out.println("Number of tr :" + infoLines.length);
+
+        // Loops through each line
         for (int infoLinePos = 0; infoLinePos < infoLines.length; infoLinePos++) {
 
-            String line = infoLines[infoLinePos];
-            StringBuilder info = new StringBuilder();
-            boolean capture = false;
+            String line = infoLines[infoLinePos];       // Gets the line
+            StringBuilder info = new StringBuilder();   // String of info
+            boolean capture = false;                    // If to capture text
 
+            // Loop through the whole text
             for (int linePos = 0; linePos < line.length(); linePos++) {
+                // Capture text which is between the <>
                 if (line.charAt(linePos) == '>') {
                     capture = true;
                     if (info.length() > 0) {
@@ -150,11 +169,12 @@ public class Wiki {
                     info.append(line.charAt(linePos));
                 }
             }
+            // Print the text
             System.out.println(info.toString());
         }
-
     }
 
+    // Gets the webpage
     private String getWebpage(String webpageUrl) {
         StringBuilder webpage = new StringBuilder();
 
