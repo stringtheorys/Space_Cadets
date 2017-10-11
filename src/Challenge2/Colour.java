@@ -17,8 +17,8 @@ public enum Colour {
     BLUE;
 
     static Background[] backgroundColours = new Background[] {
-            new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)),
             new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)),
+            new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)),
             new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)),
             new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)),
             new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY))
@@ -45,7 +45,8 @@ public enum Colour {
             return 3;
         } else if (colour == BLUE) {
             return 4;
+        } else {
+            return -1;
         }
-        return 0;
     }
 }

@@ -27,14 +27,10 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
 
         Label topLabel = new Label("PaintF*ck Interpreter");
 
-        HBox topLayout = new HBox();
-
-        VBox codeLayout = new VBox();
         Label codeLabel = new Label("Code");
         codeArea = new TextArea();
-        codeLayout.getChildren().addAll(codeLabel, codeArea);
 
-        VBox codeButtons = new VBox();
+        HBox codeButtons = new HBox();
         runButton = new Button("Run Code");
         runButton.setOnMouseClicked(event -> runPauseCode());
         Button stopButton = new Button("Stop Code");
@@ -45,8 +41,6 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
         examplesButton.setOnMouseClicked(event -> showExamples());
         codeButtons.getChildren().addAll(runButton, clearButton, examplesButton);
 
-        topLayout.getChildren().addAll(codeLayout, codeButtons);
-
         colourGrids = new Cell[gridSize][gridSize];
 
         HBox colourGridLayout = new HBox();
@@ -56,9 +50,12 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
                 colourGrids[x][y] = new Cell();
             }
             gridColumn.getChildren().addAll(colourGrids[x]);
+            colourGridLayout.getChildren().add(gridColumn);
         }
 
-        getChildren().addAll(topLabel, topLayout, colourGridLayout);
+        //rndGridColours();
+
+        getChildren().addAll(topLabel, codeLabel, codeArea, codeButtons, colourGridLayout);
     }
 
     private void runPauseCode() {
@@ -81,6 +78,7 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
 
     private void stopCode() {
         interpreter.pauseInterpreter();
+        running = 0;
     }
 
     private void clearCodeArea() {
@@ -89,6 +87,14 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
 
     private void showExamples() {
 
+    }
+
+    private void rndGridColours() {
+        for (int x = 0; x < gridSize; x++) {
+            for (int y = 0; y < gridSize; y++) {
+                colourGrids[x][y].setBackground(Colour.getRndBackground());
+            }
+        }
     }
 
     @Override
@@ -103,5 +109,11 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
     @Override
     public void errorHandling(String error) {
         System.out.println(error);
+    }
+
+    @Override
+    public void programEnd() {
+        running = 0;
+        runButton.setText("Run Code");
     }
 }
