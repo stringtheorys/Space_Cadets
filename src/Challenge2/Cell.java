@@ -4,7 +4,7 @@ import javafx.scene.control.Label;
 
 class Cell extends Label {
 
-    private static int cellSize = 20;
+    private static int cellSize = 10;
 
     private Colour currentColour;
 

@@ -49,4 +49,8 @@ public enum Colour {
             return -1;
         }
     }
+
+    static Colour rotateColour(Colour colour) {
+        return nextColour[getColourPosition(colour)];
+    }
 }

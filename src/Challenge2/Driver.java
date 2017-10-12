@@ -8,8 +8,8 @@ import javafx.stage.Stage;
 
 public class Driver extends Application {
 
-    private static final int width = 400;
-    private static final int height = 500;
+    private static final int width = 450;
+    private static final int height = 600;
 
     public static void main(String[] args) {
         launch(args);
