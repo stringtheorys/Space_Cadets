@@ -1,29 +1,57 @@
 package Challenge2;
 
-import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+// The menuScreen which is the main part of the ui
+// It inherits from the VBox which adds widgets vertically down
+// Implements the InterpreterInterface which allows the interpreter to communicate with the class
 public class MenuScreen extends VBox implements Interpreter.InterpreterInterface {
 
+    // An enum for the UiUpdate Thread
+    enum UiUpdateStatus {
+        RUNNING, PAUSED, NOT_STARTED;
+    }
+
+    // An enum for the interpreter thread
+    enum InterpreterStatus {
+        RUNNING, FINISHED, MAX_LOOPS, NOT_STARTED;
+    }
+
+    // Boolean values of different values to be clear
+    private final boolean WHITE_BACKGROUND = false;
+    private final boolean BLACK_BACKGROUND = true;
+
+    // The width of the output grid
     private final int gridSize = 40;
 
-    private int running = 0;
+    // Run button texts
+    private final String defaultRunBtnText = "Run Code";
+    private final String runningRunBtnText = "Pause";
+    private final String pausedRunBtnText = "Run";
 
-    private Button runButton;
-    private TextArea codeArea;
+    // Main Attributes
+    private InterpreterStatus interpreterStatus = InterpreterStatus.NOT_STARTED; // Interpreter status
+    private UiUpdateStatus uiUpdateStatus = UiUpdateStatus.NOT_STARTED; // Ui Updater status
+    private ConcurrentLinkedQueue<boolean[][]> UiOutputQueue = new ConcurrentLinkedQueue<>(); // Output grid queue
+    private Block[][] outputGrid = new Block[gridSize][gridSize]; // Output grid
 
-    private Cell[][] colourGrids;
+    private Interpreter interpreter; // Interpreter
 
-    private Interpreter interpreter;
+    private Button runButton; // Run Button
+    private TextArea codeArea; // Input area for code
 
+    // Constructor
     MenuScreen() {
         initGui();
     }
 
+    // Generates the ui
     private void initGui() {
 
         Label topLabel = new Label("PaintF*ck Interpreter");
@@ -32,104 +60,136 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
         codeArea = new TextArea();
 
         HBox codeButtons = new HBox();
-        runButton = new Button("Run Code");
-        runButton.setOnMouseClicked(event -> runPauseCode());
-        Button stopButton = new Button("Stop Code");
-        stopButton.setOnMouseClicked(event -> stopCode());
-        Button clearButton = new Button("Clear");
-        clearButton.setOnMouseClicked(event -> clearColourGrid());
-        Button examplesButton = new Button("Examples");
-        examplesButton.setOnMouseClicked(event -> showExamples());
-        codeButtons.getChildren().addAll(runButton, clearButton, examplesButton);
+        runButton = new Button("Run Code"); // Run Button
+        runButton.setOnMouseClicked(event -> runButtonClick());
+        Button stopButton = new Button("Stop Code"); // Stop Button
+        stopButton.setOnMouseClicked(event -> stopButtonClick());
+        Button clearButton = new Button("Clear"); // Clear Button
+        clearButton.setOnMouseClicked(event -> clearButtonClick());
+        Button examplesButton = new Button("Examples"); // Shows examples button
+        examplesButton.setOnMouseClicked(event -> exampleButtonClick());
 
-        colourGrids = new Cell[gridSize][gridSize];
+        // Add all of the widgets to the ui
+        codeButtons.getChildren().addAll(runButton, clearButton, stopButton, examplesButton);
 
+        // Add all of the output blocks to the ui
         HBox colourGridLayout = new HBox();
         for (int x = 0; x < gridSize; x++) {
             VBox gridColumn = new VBox();
             for (int y = 0; y < gridSize; y++) {
-                colourGrids[x][y] = new Cell();
+                outputGrid[x][y] = new Block();
             }
-            gridColumn.getChildren().addAll(colourGrids[x]);
+            gridColumn.getChildren().addAll(outputGrid[x]);
             colourGridLayout.getChildren().add(gridColumn);
         }
 
-        //rndGridColours();
-
         getChildren().addAll(topLabel, codeLabel, codeArea, codeButtons, colourGridLayout);
+
     }
 
-    private void runPauseCode() {
-        if (running == 0) {
-            System.out.println("MC : Start running interpreter");
+    // On Stop Button click
+    private void stopButtonClick() {
+        uiUpdateStatus = UiUpdateStatus.NOT_STARTED;
+        interpreterStatus = InterpreterStatus.NOT_STARTED;
+
+        runButton.setText(defaultRunBtnText);
+    }
+
+    // Shows a pop up with a list of default programs
+    private void exampleButtonClick() {
+
+    }
+
+    // On Run Button click
+    private void runButtonClick() {
+
+        // Pause the ui updater
+        if (uiUpdateStatus == UiUpdateStatus.RUNNING) {
+            Log.defPrint("MS : UiUpdateStatus Paused");
+
+            uiUpdateStatus = UiUpdateStatus.PAUSED;
+            runButton.setText(pausedRunBtnText);
+
+            // Run the ui updater
+        } else if (uiUpdateStatus == UiUpdateStatus.PAUSED) {
+            Log.defPrint("MS : UiUpdateStatus Running");
+
+            uiUpdateStatus = UiUpdateStatus.RUNNING;
+            runButton.setText(runningRunBtnText);
+            new UiUpdater(this).run();
+
+            // Start the ui updater
+        } else if (uiUpdateStatus == UiUpdateStatus.NOT_STARTED) {
+            Log.defPrint("MS : UiUpdateStatus Not Started");
+
+            uiUpdateStatus = UiUpdateStatus.RUNNING;
+            interpreterStatus = InterpreterStatus.RUNNING;
+
             String code = codeArea.getText();
             interpreter = new Interpreter(MenuScreen.this, gridSize, code);
             interpreter.run();
-            runButton.setText("Pause");
-            running = 1;
-        } else if (running == 1) {
-            System.out.println("MC : Pausing interpreter");
-            interpreter.pauseInterpreter();
-            runButton.setText("Run");
-            running = 2;
-        } else {
-            System.out.println("MC : Restarting interpreter");
-            interpreter.run();
-            runButton.setText("Pause");
-            running = 1;
+            new UiUpdater(this).run();
         }
     }
 
-    private void stopCode() {
-        System.out.println("MC : Stop the interpreter");
-        interpreter.pauseInterpreter();
-        running = 0;
-    }
-
-    private void clearColourGrid() {
-        System.out.println("MC : Clear Colour Grid");
+    // Turn all blocks to white
+    private void clearButtonClick() {
+        Log.print("MS : Clear button click");
         for (int x = 0; x < gridSize; x++) {
             for (int y = 0; y < gridSize; y++) {
-                colourGrids[x][y].setColour(Colour.WHITE);
+                outputGrid[x][y].setColour(WHITE_BACKGROUND);
             }
         }
-        interpreter.pauseInterpreter();
-        running = 0;
-        runButton.setText("Run Code");
+
+        uiUpdateStatus = UiUpdateStatus.NOT_STARTED;
+        interpreterStatus = InterpreterStatus.NOT_STARTED;
     }
 
-    private void showExamples() {
-        System.out.println("MC : Show Examples");
+    // Gets the Ui Update status
+    UiUpdateStatus getUiUpdateStatus() {
+        return uiUpdateStatus;
     }
 
-    private void rndGridColours() {
-        System.out.println("MC : Setting Rnd Grid Colours");
+    // Gets the Interpreter status
+    InterpreterStatus getInterpreterStatus() {
+        return interpreterStatus;
+    }
+
+    // Updates the UI
+    void updateUi(boolean[][] grid) {
+        Log.print("MS : Updating Ui");
+
         for (int x = 0; x < gridSize; x++) {
             for (int y = 0; y < gridSize; y++) {
-                colourGrids[x][y].setBackground(Colour.getRndBackground());
+                outputGrid[x][y].setColour(grid[x][y]);
             }
         }
+    }
+
+    // Ui Updater stops
+    void uiUpdaterStopped() {
+        Log.print("MS : Ui Updater stopped");
+
+        runButton.setText(defaultRunBtnText);
     }
 
     @Override
-    public void updateUI(Colour[][] grid) {
-        System.out.println("MC : Updating UI");
-        for (int x = 0; x < gridSize; x++) {
-            for (int y = 0; y < gridSize; y++) {
-                colourGrids[x][y].setColour(grid[x][y]);
-            }
-        }
+    // Adds output grid to the queue
+    public void addOutputGrid(boolean[][] colourGrid) {
+        UiOutputQueue.offer(colourGrid);
     }
 
     @Override
+    // When the interpreter has finished
     public void programEnd() {
-        System.out.println("MC : Resetting Run button");
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                running = 0;
-                runButton.setText("Run Code");
-            }
-        });
+        runButton.setText("Skip");
+        interpreterStatus = InterpreterStatus.FINISHED;
+    }
+
+    @Override
+    // When the interpreter has reached max loops
+    public void maxLoops() {
+        runButton.setText("Continue");
+        interpreterStatus = InterpreterStatus.MAX_LOOPS;
     }
 }
