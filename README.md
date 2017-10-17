@@ -22,18 +22,18 @@ The Commands
     
 <h4>Example Progams</h4>
 
-Change the screen to black
-!(https://github.com/stringtheorys/Space_Cadets/blob/master/src/Challenge2/Gifs/BlackScreen.gif)
+Change the screen to black <br></br>
+![](https://github.com/stringtheorys/Space_Cadets/blob/master/src/Challenge2/Gifs/BlackScreen.gif)
 
-Binary Counter
-!(https://github.com/stringtheorys/Space_Cadets/blob/master/src/Challenge2/Gifs/BinaryCounter.gif)
+Binary Counter <br></br>
+![](https://github.com/stringtheorys/Space_Cadets/blob/master/src/Challenge2/Gifs/BinaryCounter.gif)
 
-Black Bars
-!(https://github.com/stringtheorys/Space_Cadets/blob/master/src/Challenge2/Gifs/BlackBars.gif)
+Black Bars <br></br>
+![](https://github.com/stringtheorys/Space_Cadets/blob/master/src/Challenge2/Gifs/BlackBars.gif)
 
-Automation 110
-!(https://github.com/stringtheorys/Space_Cadets/blob/master/src/Challenge2/Gifs/Automation110.gif)
-
+Automation 110 <br></br>
+![](https://github.com/stringtheorys/Space_Cadets/blob/master/src/Challenge2/Gifs/Automation110.gif)
+ <br></br>
 Credits
 https://esolangs.org/wiki/Paintfuck
 
