@@ -29,8 +29,8 @@ public class Interpreter extends Thread {
     }
 
     // Attributes
-    private int maxLoops = 1000; // Number of times the program counter ticks over
-    private int UiUpdateTime = 100; // Number of times till the Ui is updated
+    private int maxLoops = 10000; // Number of times the program counter ticks over
+    private int uiUpdateTime = 100; // Number of times till the Ui is updated
 
     private int gridSize; // The size of the colour grid
     private int programCounter = 0; // The position in the code
@@ -51,13 +51,10 @@ public class Interpreter extends Thread {
         code = newCode;
 
         colourGrid = new boolean[gridSize][gridSize];
-
     }
 
     @Override
-    // This starts the thread
     public void run() {
-        super.run();
 
         Log.defPrint("I : Interpreter starting");
         // Interpreters the code while the program counter is not at the end of the code and the loopNumber is less than the maxLoops
@@ -72,12 +69,9 @@ public class Interpreter extends Thread {
             programCounter++;
             updateTime++;
 
-            // Check if the ui needs updating
-            if (updateTime == UiUpdateTime) {
-                Log.print("I : UpdateUI");
-
-                updateTime = 0;
+            if (updateTime == uiUpdateTime) {
                 interpreterInterface.addOutputGrid(colourGrid);
+                updateTime = 0;
             }
         }
 
@@ -87,10 +81,10 @@ public class Interpreter extends Thread {
 
         // Possible reasons that the while loops stops
         if (programCounter == code.length()) {
-            Log.print("I : Program end");
+            Log.defPrint("I : Program end");
             interpreterInterface.programEnd();
-        } else {
-            Log.print("I : Max loops");
+        } else if (loopNumber == maxLoops) {
+            Log.defPrint("I : Max loops");
             interpreterInterface.maxLoops();
         }
     }

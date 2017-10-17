@@ -31,6 +31,7 @@ class Block extends Label {
         setMaxSize(cellSize, cellSize);
 
         setColour(false);
+
     }
 
     // Changes the backgrounds
@@ -49,4 +50,6 @@ class Block extends Label {
     static void setSize(int newSize) {
         cellSize = newSize;
     }
+
+
 }
