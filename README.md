@@ -8,6 +8,7 @@ Challenge 1
 
 The challenge was to create esoteric programming language, I developped an interpreter for a language called Paintf*ck.
 Paintf*ck is related to Smallf*ck and Brainf*ck in the style however has a 2d output grid
+The language is Turing-complete over an infinite grid. If given a finite grid as in the prototype interpreter, it acts like a finite state machine.
 
 The Commands
 
@@ -24,3 +25,4 @@ Example Progams
 Change the screen to black
 *[s[e]*]
 
+![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
