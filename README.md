@@ -20,7 +20,7 @@ The Commands
     [ - While data is not 0
     ] - End of While loop
     
-Example Progams 
+Example Progams
 
 Change the screen to black
 *[s[e]*]
