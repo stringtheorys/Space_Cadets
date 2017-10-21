@@ -54,7 +54,7 @@ public class TokenizerTester {
         runCode("var test"); // Two variables
     }
 
-    private void testKeywords() {
+    private void testOperations() {
         runCode("+ - * / +-*/"); // Integer and float operations
         runCode("( )"); // Parenthes
         runCode("=="); // Equal
@@ -63,19 +63,20 @@ public class TokenizerTester {
         runCode("! "); // Not
         runCode("&&"); // And
         runCode("||"); // Or
+        runCode("= ; ,");
+    }
 
+    private void testKeywords() {
         runCode("IF THEN ELIF ELSE END"); // If statements
         runCode("WHILE DO END"); // While statement
 
-        runCode("= ; ,");
-
-        runCode("INPUT");
-        runCode("OUTPUT");
+        runCode("INPUT"); // INPUT statement
+        runCode("OUTPUT;"); // OUTPUT statement
     }
 
-    // Success
     private void testComment() {
-        runCode("// Comment \n5");
+        runCode("// Comment \n5"); // Single line comment
+        runCode("/* This is the start of a comment \n\n this is two lines later \n */5");
     }
 
     private void runCode(String code) {

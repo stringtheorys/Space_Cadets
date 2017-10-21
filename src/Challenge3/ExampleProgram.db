@@ -7,3 +7,29 @@ So this shouldn't be converted to tokens
 
 INTEGER integer1, int2, Integer3; // This is an integer
 STRING text_str;
+FLOAT floatnumber = 0.1;
+BOOLEAN booleanValue = TRUE;
+
+OUTPUT booleanValue;
+booleanValue = FALSE;
+OUTPUT booleanValue;
+
+OUTPUT "Text input: ";
+INPUT text_str;
+
+IF text_str == "test" THEN;
+    OUTPUT floatnumber;
+ELIF booleanValue THEN;
+    integer1 = 1;
+ELSE;
+    int2 = 2;
+END;
+
+Integer3 = 0;
+WHILE Integer3 < 10 DO;
+    OUTPUT Integer3;
+    Integer3 = Integer3 + 1;
+END;
+
+
+
