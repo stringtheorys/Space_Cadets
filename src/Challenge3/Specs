@@ -1,0 +1,54 @@
+
+DryBones
+
+CONSTANTS
+COMMA: ','
+SEMICOLON: ';'
+ASSIGN: '='
+PLUS: '+'
+MINUS: '-'
+MULTIPLE: '*'
+DIVISION: '/'
+LPAREN: '('
+RPAREN: ')'
+
+
+LANGUAGE
+
+Variable Types
+type_spec: Integer | Double | String | Boolean
+
+Variable Naming scheme
+variable_name: (a | b | c | ... ) (a | b | c | ... | 1 | 2 | 3 | ... | _ )*  CANT BE A RESERVED KEYWORD
+
+Variable Declaration
+declaration: type_spec variable_name (COMMA, variable_name)* SEMICOLON
+
+Assignment Statement
+assignment: variable_name ASSIGN expression
+
+Expression, Allows addition, subtraction, multiplication, division
+expression: term ((PLUS | MINUS) term)* | "STUFF" | true | false
+
+Term
+term: factor ((MULTI | DIVISION) factor)*
+
+Factor
+factor: (PLUS | MINUS) factor | INTEGER_CONST | REAL_CONST | LPAREN expr RPAREN | variable_name
+
+If Statement
+if_statement: IF boolean_statement THEN SEMICOLON
+if_end: END
+
+While loop statement
+while_statement: WHILE boolean_statment THEN SEMICOLON
+while_end: END
+
+
+DETAILS
+
+Scope: Works on a stack with the current variable names on the top scope.
+ Pop the top arraylist from the stack, then remove all elements from the variable hashmap
+
+variable: Works on a hashmap with the variable name and a variable class
+

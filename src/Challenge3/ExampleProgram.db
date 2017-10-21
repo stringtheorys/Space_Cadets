@@ -1,0 +1,9 @@
+// This is a single line comment
+
+/*
+This is a multi line comment
+So this shouldn't be converted to tokens
+*/
+
+INTEGER integer1, int2, Integer3; // This is an integer
+STRING text_str;
