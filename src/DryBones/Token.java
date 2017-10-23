@@ -1,4 +1,4 @@
-package Challenge3;
+package DryBones;
 
 public class Token {
 
@@ -16,6 +16,14 @@ public class Token {
         type = newType;
 
         Log.newTokenPrint("New " + toString());
+    }
+
+    public TokenType getType() {
+        return type;
+    }
+
+    public String getData() {
+        return data;
     }
 
     @Override

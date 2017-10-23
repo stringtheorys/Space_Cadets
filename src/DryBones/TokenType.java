@@ -1,4 +1,4 @@
-package Challenge3;
+package DryBones;
 
 // Token types
 public enum TokenType {
