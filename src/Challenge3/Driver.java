@@ -9,8 +9,8 @@ import javafx.stage.Stage;
 public class Driver extends Application {
 
     // Application size
-    private static final int width = 450;
-    private static final int height = 600;
+    private static final int width = 700;
+    private static final int height = 500;
 
     // Main function
     public static void main(String[] args) {
@@ -21,10 +21,10 @@ public class Driver extends Application {
     // Runs when the application is started
     public void start(Stage primaryStage) throws Exception {
 
-        primaryStage.setTitle("PaintF*ck Interpreter");
+        primaryStage.setTitle("Befunge Interpreter");
 
         // Sets the MenuScreen as the scene
-        MenuScreen menuScreen = new MenuScreen();
+        IDEScreen menuScreen = new IDEScreen();
         Scene scene = new Scene(menuScreen, width, height, Color.WHITE);
         primaryStage.setScene(scene);
 
