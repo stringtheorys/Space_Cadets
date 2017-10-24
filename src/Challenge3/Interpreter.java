@@ -23,7 +23,6 @@ public class Interpreter extends Thread {
     private final int gridSize = 20;
 
     private final int uiUpdateDelay = 200; // Milliseconds
-    private final int shortUiUpdateDelay = 50; // Milliseconds
 
     private char[][] codeGrid = new char[gridSize][gridSize];
     private int pc_x;
@@ -68,7 +67,7 @@ public class Interpreter extends Thread {
             interpretChar();
 
             try {
-                sleep(shortUiUpdateDelay);
+                sleep(uiUpdateDelay);
             } catch(InterruptedException e) {
                 e.printStackTrace();
             }
