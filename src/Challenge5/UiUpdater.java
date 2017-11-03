@@ -2,6 +2,7 @@ package Challenge5;
 
 import javafx.application.Platform;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 public class UiUpdater extends Thread {
@@ -9,32 +10,31 @@ public class UiUpdater extends Thread {
     private double oldX;
     private double oldY;
     private boolean running;
-    private int speed;
     private VBox canvas;
 
     private int t = 0;
-    private int R = 0;
-    private int r = 0;
-    private int p = 0;
+    private double R = 0;
+    private double r = 0;
+    private double p = 0;
+    private double speed;
 
     public UiUpdater(VBox newCanvas) {
         canvas = newCanvas;
-        running = true;
+        running = false;
     }
 
-    public void setSettings(int new_R, int new_r, int new_p) {
+    public void setSettings(double new_R, double new_r, double new_p, double new_speed) {
         R = new_R;
         r = new_r;
         p = new_p;
-    }
-
-    public void setSpeed(int newSpeed) {
-        speed = newSpeed;
+        speed = new_speed;
     }
 
     @Override
     public void run() {
         super.run();
+
+        running = true;
 
         try {
             while (running) {
@@ -43,16 +43,23 @@ public class UiUpdater extends Thread {
                 t++;
 
                 Line line = new Line(oldX, oldY, nextX, nextY);
+                line.setStroke(Color.RED);
+                line.setStrokeWidth(2);
+
                 oldX = nextX;
                 oldY = nextY;
 
                 Platform.runLater(() -> canvas.getChildren().add(line));
 
-                sleep(speed);
+                sleep((int) speed);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void pause() {
+        running = false;
     }
 
     private double getXPosition() {
