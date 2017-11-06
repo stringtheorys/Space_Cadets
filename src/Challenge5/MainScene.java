@@ -42,24 +42,25 @@ public class MainScene extends VBox {
         HBox r_box = new HBox();
         Label r_label = new Label("r :");
         r_slider = new Slider();
-        R_slider.setMin(-200);
-        R_slider.setMax(200);
-        R_box.getChildren().addAll(r_label, r_slider);
+        r_slider.setMin(-200);
+        r_slider.setMax(200);
+        r_box.getChildren().addAll(r_label, r_slider);
 
         HBox p_box = new HBox();
         Label p_label = new Label("p :");
         p_slider = new Slider();
-        R_slider.setMin(-200);
-        R_slider.setMax(200);
-        R_box.getChildren().addAll(p_label, p_slider);
+        p_slider.setMin(-200);
+        p_slider.setMax(200);
+        p_box.getChildren().addAll(p_label, p_slider);
 
 
         HBox speed_box = new HBox();
         Label speed_label = new Label("Speed :");
         speed_slider = new Slider();
-        R_slider.setMin(1000);
-        R_slider.setMax(5);
-        R_box.getChildren().addAll(speed_label, speed_slider);
+        speed_slider.setMin(5);
+        speed_slider.setMax(1000);
+
+        speed_box.getChildren().addAll(speed_label, speed_slider);
 
         getChildren().addAll(box, buttons, R_box, r_box, p_box, speed_box);
     }
@@ -80,6 +81,10 @@ public class MainScene extends VBox {
             double r = r_slider.getValue();
             double p = p_slider.getValue();
             double speed = speed_slider.getValue();
+            System.out.println("R :" + R);
+            System.out.println("r :" + r);
+            System.out.println("p :" + p);
+            System.out.println("Speed :" + speed);
             uiThread.setSettings(R, r, p, speed);
 
             start = true;
