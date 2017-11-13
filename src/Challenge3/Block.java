@@ -9,36 +9,37 @@ import javafx.scene.paint.Color;
 
 public class Block extends TextField {
 
-    private int size = 20;
+  private int size = 20;
 
-    public Block() {
+  public Block() {
 
-        // Limits the text size
-        textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() > 1) {
-                setText(getText().substring(0, 1));
-            }
-        });
+    // Limits the text size
+    textProperty().addListener((observable, oldValue, newValue) -> {
+      if (newValue.length() > 1) {
+        setText(getText().substring(0, 1));
+      }
+    });
 
-        setMinWidth(size);
-        setMaxWidth(size);
-        setMinHeight(size);
-        setMaxHeight(size);
+    setMinWidth(size);
+    setMaxWidth(size);
+    setMinHeight(size);
+    setMaxHeight(size);
+  }
+
+  public char getInput() {
+    if (getText().equals("")) {
+      return ' ';
+    } else {
+      return getText().charAt(0);
     }
+  }
 
-    public char getInput() {
-        if (getText().equals("")) {
-            return ' ';
-        } else {
-            return getText().charAt(0);
-        }
-    }
+  public void highlight() {
+    setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+  }
 
-    public void highlight() {
-        setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-    }
-    public void unhighlight() {
-        setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-    }
+  public void unhighlight() {
+    setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+  }
 
 }

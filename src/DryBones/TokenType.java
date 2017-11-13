@@ -2,47 +2,47 @@ package DryBones;
 
 // Token types
 public enum TokenType {
-    INTEGER,
-    FLOAT,
-    STRING,
-    BOOLEAN,
+  INTEGER,
+  FLOAT,
+  STRING,
+  BOOLEAN,
 
-    INTEGER_CONST,
-    FLOAT_CONST,
-    STRING_CONST,
-    BOOLEAN_CONST,
+  INTEGER_CONST,
+  FLOAT_CONST,
+  STRING_CONST,
+  BOOLEAN_CONST,
 
-    PLUS,
-    MINUS,
-    MUL,
-    DIV,
+  PLUS,
+  MINUS,
+  MUL,
+  DIV,
 
-    LPAREN,
-    RPAREN,
+  LPAREN,
+  RPAREN,
 
-    EQUAL,
-    NOTEQUAL,
-    GREATER,
-    LESS,
+  EQUAL,
+  NOTEQUAL,
+  GREATER,
+  LESS,
 
-    NOT,
-    AND,
-    OR,
+  NOT,
+  AND,
+  OR,
 
-    VARIABLE,
+  VARIABLE,
 
-    IF,
-    THEN,
-    ELIF,
-    ElSE,
-    END,
-    WHILE,
-    DO,
+  IF,
+  THEN,
+  ELIF,
+  ElSE,
+  END,
+  WHILE,
+  DO,
 
-    ASSIGN,
-    SEMICOLON,
-    COMMA,
+  ASSIGN,
+  SEMICOLON,
+  COMMA,
 
-    INPUT,
-    OUTPUT
+  INPUT,
+  OUTPUT
 }

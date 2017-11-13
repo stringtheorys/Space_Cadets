@@ -9,214 +9,215 @@ import javafx.scene.layout.VBox;
 
 public class IDEScreen extends VBox implements Interpreter.InterpreterInterface {
 
-    enum ConsoleInput {
-        NONE,
-        INTEGER,
-        CHARACTER
+  enum ConsoleInput {
+    NONE,
+    INTEGER,
+    CHARACTER
+  }
+
+  private final char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+  private final char[] digits = "0123456789".toCharArray();
+
+  private int gridSize = 20;
+
+  private Block[][] inputGrid = new Block[gridSize][gridSize];
+  private StackBar stackBar;
+  private Label console;
+  private ConsoleInput consoleInputType = ConsoleInput.NONE;
+
+  private Interpreter interpreter;
+  private boolean interpreterRunning = false;
+  private boolean interpreterFinished = true;
+
+  public IDEScreen() {
+
+    initGui();
+  }
+
+  private void initGui() {
+
+    Label topLabel = new Label("Befunge Interpreter");
+    HBox mainBox = new HBox();
+
+    // Left Box
+    VBox leftBox = new VBox();
+    // Input box
+    VBox inputBox = new VBox();
+    for (int x = 0; x < gridSize; x++) {
+      HBox row = new HBox();
+      for (int y = 0; y < gridSize; y++) {
+        inputGrid[x][y] = new Block();
+        row.getChildren().add(inputGrid[x][y]);
+      }
+      inputBox.getChildren().add(row);
     }
 
-    private final char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-    private final char[] digits = "0123456789".toCharArray();
+    // Console box
+    console = new Label("Console\n");
 
-    private int gridSize = 20;
+    // Console input
+    HBox consoleInputBox = new HBox();
+    Label inputLabel = new Label("Input :");
+    TextField inputField = new TextField();
+    inputField.textProperty().addListener((observable, oldValue, newValue) -> {
+      if (newValue.length() > 0 && consoleInputType == ConsoleInput.NONE) {
+        inputField.setText("");
+      } else if (newValue.length() > 1) {
+        inputField.setText(newValue.substring(0, 1));
+      } else if (newValue.length() == 1) {
+        char input = inputField.getText().charAt(0);
 
-    private Block[][] inputGrid = new Block[gridSize][gridSize];
-    private StackBar stackBar;
-    private Label console;
-    private ConsoleInput consoleInputType = ConsoleInput.NONE;
-
-    private Interpreter interpreter;
-    private boolean interpreterRunning = false;
-    private boolean interpreterFinished = true;
-
-    public IDEScreen() {
-
-        initGui();
-    }
-
-    private void initGui() {
-
-        Label topLabel = new Label("Befunge Interpreter");
-        HBox mainBox = new HBox();
-
-        // Left Box
-        VBox leftBox = new VBox();
-        // Input box
-        VBox inputBox = new VBox();
-        for (int x = 0; x < gridSize; x++) {
-            HBox row = new HBox();
-            for (int y = 0; y < gridSize; y++) {
-                inputGrid[x][y] = new Block();
-                row.getChildren().add(inputGrid[x][y]);
+        if (consoleInputType == ConsoleInput.CHARACTER) {
+          for (char alpha : alphabet) {
+            if (input == alpha) {
+              inputField.setText(newValue);
+              return;
             }
-            inputBox.getChildren().add(row);
+          }
+          inputField.setText("");
+        } else if (consoleInputType == ConsoleInput.INTEGER) {
+          for (char digit : digits) {
+            if (input == digit) {
+              inputField.setText(newValue);
+              return;
+            }
+          }
+          inputField.setText("");
         }
+      }
+    });
+    inputField.setOnKeyPressed(event -> {
+      if (event.getCode().equals(KeyCode.ENTER)) {
+        // TODO
+      }
+    });
 
-        // Console box
-        console = new Label("Console\n");
+    consoleInputBox.getChildren().addAll(inputLabel, inputField);
 
-        // Console input
-        HBox consoleInputBox = new HBox();
-        Label inputLabel = new Label("Input :");
-        TextField inputField = new TextField();
-        inputField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() > 0 && consoleInputType == ConsoleInput.NONE) {
-                inputField.setText("");
-            } else if (newValue.length() > 1) {
-                inputField.setText(newValue.substring(0,1));
-            } else if (newValue.length() == 1) {
-                char input = inputField.getText().charAt(0);
+    leftBox.getChildren().addAll(inputBox);
 
-                if (consoleInputType == ConsoleInput.CHARACTER) {
-                    for (char alpha : alphabet) {
-                        if (input == alpha) {
-                            inputField.setText(newValue);
-                            return;
-                        }
-                    }
-                    inputField.setText("");
-                } else if (consoleInputType == ConsoleInput.INTEGER) {
-                    for (char digit : digits) {
-                        if (input == digit) {
-                            inputField.setText(newValue);
-                            return;
-                        }
-                    }
-                    inputField.setText("");
-                }
-            }
-        });
-        inputField.setOnKeyPressed(event -> {
-            if (event.getCode().equals(KeyCode.ENTER)) {
-                // TODO
-            }
-        });
+    VBox rightBox = new VBox();
 
-                consoleInputBox.getChildren().addAll(inputLabel, inputField);
+    stackBar = new StackBar();
 
-        leftBox.getChildren().addAll(inputBox);
+    HBox buttons = new HBox();
 
-        VBox rightBox = new VBox();
+    Button singleRunBtn = new Button("Single Run");
+    singleRunBtn.setOnMouseClicked(event -> singleRun());
+    Button multiRunBtn = new Button("Multi Run");
+    multiRunBtn.setOnMouseClicked(event -> multiRun());
+    Button runAllBtn = new Button("Run All");
+    runAllBtn.setOnMouseClicked(event -> runAll());
+    Button stopBtn = new Button("Stop");
+    stopBtn.setOnMouseClicked(event -> stopInterpreter());
 
-        stackBar = new StackBar();
+    buttons.getChildren().addAll(singleRunBtn, multiRunBtn, runAllBtn, stopBtn);
 
-        HBox buttons = new HBox();
+    rightBox.getChildren().addAll(stackBar, buttons, console, consoleInputBox);
 
-        Button singleRunBtn = new Button("Single Run");
-        singleRunBtn.setOnMouseClicked(event -> singleRun());
-        Button multiRunBtn = new Button("Multi Run");
-        multiRunBtn.setOnMouseClicked(event -> multiRun());
-        Button runAllBtn = new Button("Run All");
-        runAllBtn.setOnMouseClicked(event -> runAll());
-        Button stopBtn = new Button("Stop");
-        stopBtn.setOnMouseClicked(event -> stopInterpreter());
+    mainBox.getChildren().addAll(leftBox, rightBox);
+    getChildren().addAll(topLabel, mainBox);
+  }
 
-        buttons.getChildren().addAll(singleRunBtn, multiRunBtn, runAllBtn, stopBtn);
-
-        rightBox.getChildren().addAll(stackBar, buttons, console, consoleInputBox);
-
-        mainBox.getChildren().addAll(leftBox, rightBox);
-        getChildren().addAll(topLabel, mainBox);
+  private void singleRun() {
+    if (interpreterFinished) {
+      if (!interpreterRunning) {
+        interpreter = new Interpreter(this, IDEScreen.this, getCode());
+        interpreterRunning = true;
+      }
+      interpreterFinished = false;
+      interpreter.runSingle();
     }
+  }
 
-    private void singleRun() {
-        if (interpreterFinished) {
-            if (!interpreterRunning) {
-                interpreter = new Interpreter(this, IDEScreen.this, getCode());
-                interpreterRunning = true;
-            }
-            interpreterFinished = false;
-            interpreter.runSingle();
-        }
+  private void multiRun() {
+    if (interpreterFinished) {
+      if (!interpreterRunning) {
+        interpreter = new Interpreter(this, IDEScreen.this, getCode());
+        interpreterRunning = true;
+      }
+      interpreterFinished = false;
+      interpreter.runMulti();
     }
+  }
 
-    private void multiRun() {
-        if (interpreterFinished) {
-            if (!interpreterRunning) {
-                interpreter = new Interpreter(this, IDEScreen.this, getCode());
-                interpreterRunning = true;
-            }
-            interpreterFinished = false;
-            interpreter.runMulti();
-        }
+  private void runAll() {
+    if (interpreterFinished) {
+      if (!interpreterRunning) {
+        interpreter = new Interpreter(this, IDEScreen.this, getCode());
+        interpreterRunning = true;
+      }
+      interpreterFinished = false;
+      interpreter.runAll();
     }
+  }
 
-    private void runAll() {
-        if (interpreterFinished) {
-            if (!interpreterRunning) {
-                interpreter = new Interpreter(this, IDEScreen.this, getCode());
-                interpreterRunning = true;
-            }
-            interpreterFinished = false;
-            interpreter.runAll();
-        }
-    }
+  private void stopInterpreter() {
+    interpreter.stopInterpreter();
+    interpreterRunning = false;
+  }
 
-    private void stopInterpreter() {
-        interpreter.stopInterpreter();
-        interpreterRunning = false;
+  private char[][] getCode() {
+    char[][] code = new char[gridSize][gridSize];
+    for (int x = 0; x < gridSize; x++) {
+      for (int y = 0; y < gridSize; y++) {
+        code[x][y] = inputGrid[x][y].getInput();
+      }
     }
+    return code;
+  }
 
-    private char[][] getCode() {
-        char[][] code = new char[gridSize][gridSize];
-        for (int x = 0; x < gridSize; x++) {
-            for (int y = 0; y < gridSize; y++) {
-                code[x][y] = inputGrid[x][y].getInput();
-            }
-        }
-        return code;
-    }
+  public void pushElement(int element) {
+    stackBar.pushElement(element);
+  }
 
-    public void pushElement(int element) {
-        stackBar.pushElement(element);
-    }
+  public void popElement() {
+    stackBar.popElement();
+  }
 
-    public void popElement() {
-        stackBar.popElement();
-    }
+  @Override
+  public void interpreterFinishedRunning() {
+    interpreterFinished = true;
+  }
 
-    @Override
-    public void interpreterFinishedRunning() {
-        interpreterFinished = true;
-    }
+  public char getCharInput() {
+    consoleInputType = ConsoleInput.CHARACTER;
+    return ' ';
+  }
 
-    public char getCharInput() {
-        consoleInputType = ConsoleInput.CHARACTER;
-        return ' ';
-    }
-    public int getIntInput() {
-        consoleInputType = ConsoleInput.INTEGER;
-        return ' ';
-    }
+  public int getIntInput() {
+    consoleInputType = ConsoleInput.INTEGER;
+    return ' ';
+  }
 
-    @Override
-    public void interpreterHasStopped() {
-        interpreterRunning = false;
-        console.setText(console.getText() + "\nProgram Ended");
-    }
+  @Override
+  public void interpreterHasStopped() {
+    interpreterRunning = false;
+    console.setText(console.getText() + "\nProgram Ended");
+  }
 
-    @Override
-    public void printInteger(int num) {
-        console.setText(console.getText() + num);
-    }
+  @Override
+  public void printInteger(int num) {
+    console.setText(console.getText() + num);
+  }
 
-    @Override
-    public void printChar(char character) {
-        console.setText(console.getText() + character);
-    }
+  @Override
+  public void printChar(char character) {
+    console.setText(console.getText() + character);
+  }
 
-    @Override
-    public void error(String errorMsg) {
-        console.setText(console.getText() + "\n" + errorMsg);
-    }
+  @Override
+  public void error(String errorMsg) {
+    console.setText(console.getText() + "\n" + errorMsg);
+  }
 
-    @Override
-    public void unhighlight(int x, int y) {
-        inputGrid[x][y].unhighlight();
-    }
+  @Override
+  public void unhighlight(int x, int y) {
+    inputGrid[x][y].unhighlight();
+  }
 
-    @Override
-    public void highlight(int x, int y) {
-        inputGrid[x][y].highlight();
-    }
+  @Override
+  public void highlight(int x, int y) {
+    inputGrid[x][y].highlight();
+  }
 }

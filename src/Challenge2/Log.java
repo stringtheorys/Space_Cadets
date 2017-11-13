@@ -5,15 +5,15 @@ package Challenge2;
 // But actived quickly and easily
 class Log {
 
-    private static boolean printing = false;
+  private static boolean printing = false;
 
-    static void print(String line) {
-        if (printing) {
-            System.out.println(line);
-        }
+  static void print(String line) {
+    if (printing) {
+      System.out.println(line);
     }
+  }
 
-    static void defPrint(String line) {
-        System.out.println(line);
-    }
+  static void defPrint(String line) {
+    System.out.println(line);
+  }
 }
