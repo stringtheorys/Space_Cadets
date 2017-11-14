@@ -4,11 +4,11 @@ import java.util.Stack;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-public class StackBar extends VBox {
+class StackBar extends VBox {
 
   private final char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 
-  private Stack<Label> elements = new Stack<>();
+  private final Stack<Label> elements = new Stack<>();
 
   public StackBar() {
     Label topLabel = new Label("Current Stack");

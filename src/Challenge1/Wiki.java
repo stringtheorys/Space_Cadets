@@ -10,20 +10,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class Wiki {
+class Wiki {
 
   private static final int maxSearchs = 6;
-  private Scanner scanner;
+  private final Scanner scanner;
 
   public static void main(String[] args) {
     new Wiki().searchWikipedia();
   }
 
-  public Wiki() {
+  private Wiki() {
     scanner = new Scanner(System.in);
   }
 
-  public void searchWikipedia() {
+  private void searchWikipedia() {
 
     String researchPages;
 
@@ -150,9 +150,8 @@ public class Wiki {
     String[] infoLines = infoCard.split("<tr>");
 
     // Loops through each line
-    for (int infoLinePos = 0; infoLinePos < infoLines.length; infoLinePos++) {
+    for (String line : infoLines) {
 
-      String line = infoLines[infoLinePos];       // Gets the line
       StringBuilder info = new StringBuilder();   // String of info
       boolean capture = false;                    // If to capture text
 
@@ -190,8 +189,6 @@ public class Wiki {
       }
       is.close();
 
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
     }

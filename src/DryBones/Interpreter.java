@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Stack;
 
-public class Interpreter {
+class Interpreter {
 
-  private Token[] tokens;
-  private int tokenLength;
+  private final Token[] tokens;
+  private final int tokenLength;
   private int position = 0;
   private Token currentToken;
 
-  private HashMap<String, Variable> variableMap = new HashMap<>();
+  private final HashMap<String, Variable> variableMap = new HashMap<>();
   private Stack<Integer> loopStack = new Stack<>();
   private Stack<ArrayList<String>> scopeStack = new Stack<>();
 

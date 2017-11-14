@@ -2,13 +2,13 @@ package DryBones;
 
 import java.util.ArrayList;
 
-public class TokenizerTester {
+class TokenizerTester {
 
   public static void main(String[] args) {
     new TokenizerTester();
   }
 
-  public TokenizerTester() {
+  private TokenizerTester() {
     //testVariableConsts();
     //testVariableTypes();
     //testVariableNames();

@@ -7,12 +7,13 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
-public class Anagram {
+class Anagram {
 
   // Input class
-  private Scanner scanner;
+  private final Scanner scanner;
 
   // Language using in URL
   private final String[] languages = new String[]{
@@ -31,7 +32,6 @@ public class Anagram {
   // Url Options
   private String word = "";           // Anagramed Word
   private int languagePos = 0;        // Language Position
-  private int maxAnagrams = 500;      // Max number of anagrams
   private int maxNumWords = 20;       // Max number of words in anagram
   private String mustInclude = "";    // Words that must be included in the anagram
   private String mustExclude = "";    // Words that cant be included in the anagram
@@ -43,12 +43,12 @@ public class Anagram {
     new Anagram().findAnagrams(); // Runs program
   }
 
-  public Anagram() {
+  private Anagram() {
     scanner = new Scanner(System.in); // Creates scanner
   }
 
   // Finds the anagrams
-  public void findAnagrams() {
+  private void findAnagrams() {
 
     System.out.println("Welcome to the anagram generator");
     // Runs the code which the user enter y or Y
@@ -268,10 +268,7 @@ public class Anagram {
     String[] lines = webpage.split("<br>");
 
     // Skip the first 6 and last 2 elements in array are parts we dont want them
-    for (int pos = 6; pos < lines.length - 2; pos++) {
-      // Add the rest to an array
-      anagrams.add(lines[pos]);
-    }
+    anagrams.addAll(Arrays.asList(lines).subList(6, lines.length - 2));
     return anagrams;
   }
 
@@ -279,6 +276,7 @@ public class Anagram {
   private String getWebPage() {
 
     // Get the search Url
+    int maxAnagrams = 500;
     String searchUrl = "https://new.wordsmith.org/anagram/anagram.cgi?anagram=+"
         + word.replace(" ", "+")
         + "&language=" + languages[languagePos]       // Language
@@ -306,8 +304,6 @@ public class Anagram {
       }
       is.close();
 
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -3,7 +3,7 @@ package Challenge2;
 import java.util.Stack;
 
 // Interpreter for Paintf*ck and runs as a thread
-public class Interpreter extends Thread {
+class Interpreter extends Thread {
 
     /*
     Commands
@@ -28,22 +28,18 @@ public class Interpreter extends Thread {
     void maxLoops();
   }
 
-  // Attributes
-  private int maxLoops = 10000; // Number of times the program counter ticks over
-  private int uiUpdateTime = 100; // Number of times till the Ui is updated
-
-  private int gridSize; // The size of the colour grid
+  private final int gridSize; // The size of the colour grid
   private int programCounter = 0; // The position in the code
   private int updateTime = 0; // The number of times till ui update
   private int loopNumber = 0; // The number of time the code will loop
-  private Stack<Integer> loopPositions = new Stack<>(); // The loop positions
+  private final Stack<Integer> loopPositions = new Stack<>(); // The loop positions
   private int x_pointer = 0; // The pointer in the horizontal direction
   private int y_pointer = 0; // The pointer in the vertical direction
-  private boolean[][] colourGrid; // The two dimensional array of grid elements
+  private final boolean[][] colourGrid; // The two dimensional array of grid elements
 
-  private String code; // The code to run
+  private final String code; // The code to run
 
-  private InterpreterInterface interpreterInterface; // The interface to communicate with the menu screen
+  private final InterpreterInterface interpreterInterface; // The interface to communicate with the menu screen
 
   Interpreter(InterpreterInterface newInterpreterInterface, int newGridSize, String newCode) {
     interpreterInterface = newInterpreterInterface;
@@ -60,6 +56,7 @@ public class Interpreter extends Thread {
     // Interpreters the code while the program counter is not at the end of the code and the loopNumber is less than the maxLoops
     // So to prevent an infinite loop
     // This could be done with a hashset but is memory expensive
+    int maxLoops = 10000;
     while (programCounter < code.length() && loopNumber < maxLoops) {
       // Interpreter the next character in the code
       interpretNextChar();
@@ -69,6 +66,7 @@ public class Interpreter extends Thread {
       programCounter++;
       updateTime++;
 
+      int uiUpdateTime = 100;
       if (updateTime == uiUpdateTime) {
         interpreterInterface.addOutputGrid(colourGrid);
         updateTime = 0;

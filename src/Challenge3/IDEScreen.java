@@ -18,9 +18,9 @@ public class IDEScreen extends VBox implements Interpreter.InterpreterInterface 
   private final char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
   private final char[] digits = "0123456789".toCharArray();
 
-  private int gridSize = 20;
+  private final int gridSize = 20;
 
-  private Block[][] inputGrid = new Block[gridSize][gridSize];
+  private final Block[][] inputGrid = new Block[gridSize][gridSize];
   private StackBar stackBar;
   private Label console;
   private ConsoleInput consoleInputType = ConsoleInput.NONE;

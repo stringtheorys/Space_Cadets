@@ -1,8 +1,8 @@
 package DryBones;
 
-public class Token {
+class Token {
 
-  private TokenType type;
+  private final TokenType type;
   private String data;
 
   public Token(TokenType newType, String newData) {

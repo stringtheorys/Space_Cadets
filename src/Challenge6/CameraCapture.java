@@ -3,36 +3,35 @@ package Challenge6;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
+import java.util.Random;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
-public class CameraCapture extends Thread {
+class CameraCapture extends Thread {
 
-  private int width = 640;
-  private int height = 480;
-  private int type = 0;
+  private final int width = 640;
+  private final int height = 480;
+  private final int type = 0;
 
   private VideoCapture capture;
-  private ImageView output;
-  private Mat capturedImageMatrix;
+  private final ImageView output;
   private boolean running = true;
 
-  private Mat sobelX = new Mat(width, height, type);
-  private Mat sobelY = new Mat(width, height, type);
-  private Mat sobelResult = new Mat(width, height, type);
+  private Mat outputMatrix = new Mat(width, height, type);
+  private Mat captureMatrix = new Mat(width, height, type);
 
-  private int outputType = 0;
+  private String option = "Normal Color";
 
   public CameraCapture(ImageView newOutput) {
     output = newOutput;
-
   }
 
   @Override
@@ -40,33 +39,91 @@ public class CameraCapture extends Thread {
     super.run();
 
     capture = new VideoCapture(0);
-    Mat captureMatrix = new Mat();
 
     if (capture.isOpened()) {
       while (running && capture.read(captureMatrix)) {
-        //System.out.println("New Capture");
 
-        // Convert to grayscale
-        Imgproc.cvtColor(captureMatrix, captureMatrix, Imgproc.COLOR_RGB2GRAY);
+        BufferedImage bufferedImage;
+        if (option.equals("Normal Color")) {
+          bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+          outputMatrix = captureMatrix.clone();
 
-        Imgproc.Sobel(captureMatrix, sobelX, type, 1, 0);
-        Imgproc.Sobel(captureMatrix, sobelY, type, 0, 1);
+        } else if (option.equals("Gray Scale")) {
+          bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+          Imgproc.cvtColor(captureMatrix, outputMatrix, Imgproc.COLOR_RGB2GRAY);
 
-        Core.addWeighted(sobelX, 0.5, sobelY, 0.5, 1, sobelResult);
+        } else if (option.equals("Sobel X")) {
+          bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+          Imgproc.cvtColor(captureMatrix, captureMatrix, Imgproc.COLOR_RGB2GRAY);
+          Imgproc.Sobel(captureMatrix, outputMatrix, type, 1, 0);
 
-        //BufferedImage bufferedImage = new BufferedImage(captureMatrix.width(), captureMatrix.height(), BufferedImage.TYPE_BYTE_GRAY);
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+        } else if (option.equals("Sobel Y")) {
+          bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+          Imgproc.cvtColor(captureMatrix, captureMatrix, Imgproc.COLOR_RGB2GRAY);
+          Imgproc.Sobel(captureMatrix, outputMatrix, type, 0, 1);
+
+        } else if (option.equals("Sobel Both")) {
+          bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+          Imgproc.cvtColor(captureMatrix, captureMatrix, Imgproc.COLOR_RGB2GRAY);
+          final Mat sobelX = new Mat(width, height, type);
+          final Mat sobelY = new Mat(width, height, type);
+          Imgproc.Sobel(captureMatrix, sobelX, type, 1, 0);
+          Imgproc.Sobel(captureMatrix, sobelY, type, 0, 1);
+          Core.addWeighted(sobelX, 0.5, sobelY, 0.5, 1, outputMatrix);
+
+        } else if (option.equals("Circle")) {
+          bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+          Imgproc.cvtColor(captureMatrix, outputMatrix, Imgproc.COLOR_RGB2GRAY);
+          Mat circles = new Mat();
+          Imgproc.HoughCircles(outputMatrix, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 50, 0,200);
+          if (circles.cols() > 0) {
+            double[] circle = circles.get(0, 0);
+
+            Point p = new Point(circle[0], circle[1]);
+            double r = circle[2];
+
+            Imgproc.circle(outputMatrix, p, (int) r, new Scalar(0,0,255), radius(r));
+          }
+        } else if (option.equals("All Circles")) {
+          bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+          Imgproc.cvtColor(captureMatrix, outputMatrix, Imgproc.COLOR_RGB2GRAY);
+          Mat circles = new Mat();
+          Imgproc.HoughCircles(outputMatrix, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 50, 0,200);
+          for (int x = 0; x < circles.cols(); x++) {
+
+            double[] circle = circles.get(0, x);
+
+            Point p = new Point(circle[0], circle[1]);
+            double r = circle[2];
+
+            Imgproc.circle(outputMatrix, p, (int) r, new Scalar(0,0,255), radius(r));
+          }
+        } else if (option.equals("Coloured Circles")) {
+          bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+          Imgproc.cvtColor(captureMatrix, outputMatrix, Imgproc.COLOR_RGB2GRAY);
+          Mat circles = new Mat();
+          Imgproc.HoughCircles(outputMatrix, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 50, 0,200);
+          for (int x = 0; x < circles.cols(); x++) {
+
+            double[] circle = circles.get(0, x);
+
+            Point p = new Point(circle[0], circle[1]);
+            double r = circle[2];
+
+            Imgproc.circle(outputMatrix, p, (int) r, circleColour(), radius(r));
+          }
+        } else {
+          System.err.println("Unknown option:" + option);
+          break;
+        }
 
         WritableRaster raster = bufferedImage.getRaster();
         DataBufferByte dataBuffer = (DataBufferByte) raster.getDataBuffer();
         byte[] data = dataBuffer.getData();
-        // Sets the image data
-        // Set as option
-        sobelResult.get(0, 0, data);
+        outputMatrix.get(0, 0, data);
 
         Image image = SwingFXUtils.toFXImage(bufferedImage, null);
         Platform.runLater(() -> output.setImage(image));
-
 
         try {
           Thread.sleep(100);
@@ -86,4 +143,18 @@ public class CameraCapture extends Thread {
     capture.release();
     System.out.println("Released Video");
   }
+
+  public void changeOption(String newOption) {
+    option = newOption;
+  }
+
+  private Scalar circleColour() {
+    Random r = new Random();
+    return new Scalar(r.nextInt(255), r.nextInt(255), r.nextInt(255));
+  }
+
+  private int radius(double r) {
+    return (int) (r * 0.1);
+  }
+
 }

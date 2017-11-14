@@ -4,13 +4,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 class UiUpdater extends Thread {
 
-  private int uiWaitTime = 100;
-  private int interpreterWaitTime = 100;
-
-  private MenuScreen menuScreen;
-  private Block[][] outputGrid;
-  private int gridSize;
-  private ConcurrentLinkedQueue<boolean[][]> outputGridQueue;
+  private final MenuScreen menuScreen;
+  private final Block[][] outputGrid;
+  private final int gridSize;
+  private final ConcurrentLinkedQueue<boolean[][]> outputGridQueue;
 
   UiUpdater(MenuScreen newMenuScreen, Block[][] newOutputGrid, int newGridSize,
       ConcurrentLinkedQueue<boolean[][]>
@@ -28,6 +25,7 @@ class UiUpdater extends Thread {
 
     while (menuScreen.getUiUpdateStatus() == MenuScreen.UiUpdateStatus.RUNNING) {
 
+      //noinspection PointlessBooleanExpression
       if (outputGridQueue.isEmpty() == false) {
         Log.defPrint("UI : Run later on ui update size :" + outputGridQueue.size());
 
@@ -41,6 +39,7 @@ class UiUpdater extends Thread {
         }
 
         try {
+          int uiWaitTime = 100;
           sleep(uiWaitTime);
         } catch (InterruptedException e) {
           e.printStackTrace();
@@ -49,6 +48,7 @@ class UiUpdater extends Thread {
       } else if (menuScreen.getInterpreterStatus() == MenuScreen.InterpreterStatus.RUNNING) {
         Log.defPrint("UI : Interpreter running but no ui outputs");
         try {
+          int interpreterWaitTime = 100;
           Thread.sleep(interpreterWaitTime);
         } catch (InterruptedException e) {
           e.printStackTrace();

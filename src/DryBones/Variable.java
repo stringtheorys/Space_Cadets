@@ -2,9 +2,9 @@ package DryBones;
 
 class Variable<Type extends Comparable<Type>> {
 
-  private String name;
+  private final String name;
   private Type value;
-  private TokenType type;
+  private final TokenType type;
 
   private Variable(String newName, Type newValue, TokenType newType) {
     name = newName;

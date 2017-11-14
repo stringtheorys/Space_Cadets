@@ -1,4 +1,4 @@
-public class test {
+class test {
 
   public static void main(String[] args) {
     String props = System.getProperty("java.library.path");

@@ -6,7 +6,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class MainScene extends VBox {
+class MainScene extends VBox {
 
   private Slider R_slider, r_slider, p_slider, speed_slider;
 

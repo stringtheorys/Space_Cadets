@@ -29,8 +29,6 @@ public class Interpreter extends Thread {
   private final char[] digits = "0123456789".toCharArray();
   private final int gridSize = 20;
 
-  private final int uiUpdateDelay = 200; // Milliseconds
-
   private char[][] codeGrid = new char[gridSize][gridSize];
   private int pc_x;
   private int pc_y;
@@ -39,10 +37,10 @@ public class Interpreter extends Thread {
   private boolean running = false;
   private int loopCounter = 0;
 
-  private Stack<Integer> dataStack = new Stack<>();
+  private final Stack<Integer> dataStack = new Stack<>();
 
-  private IDEScreen ideScreen;
-  private InterpreterInterface interpreterInterface;
+  private final IDEScreen ideScreen;
+  private final InterpreterInterface interpreterInterface;
 
   public Interpreter(IDEScreen newIDEScreen, InterpreterInterface newInterpreterInterface,
       char[][] code) {
@@ -69,12 +67,13 @@ public class Interpreter extends Thread {
     runInterpreter(1000);
   }
 
-  public void runInterpreter(int maxLoopCounter) {
+  private void runInterpreter(int maxLoopCounter) {
     while (running && loopCounter < maxLoopCounter) {
       loopCounter++;
       interpretChar();
 
       try {
+        int uiUpdateDelay = 200;
         sleep(uiUpdateDelay);
       } catch (InterruptedException e) {
         e.printStackTrace();

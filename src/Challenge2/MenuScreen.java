@@ -15,16 +15,14 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
 
   // An enum for the UiUpdate Thread
   enum UiUpdateStatus {
-    RUNNING, PAUSED, NOT_STARTED;
+    RUNNING, PAUSED, NOT_STARTED
   }
 
   // An enum for the interpreter thread
   enum InterpreterStatus {
-    RUNNING, FINISHED, MAX_LOOPS, NOT_STARTED;
+    RUNNING, FINISHED, MAX_LOOPS, NOT_STARTED
   }
 
-  // Boolean values of different values to be clear
-  private final boolean WHITE_BACKGROUND = false;
   private final boolean BLACK_BACKGROUND = true;
 
   // The width of the output grid
@@ -38,11 +36,10 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
   // Main Attributes
   private InterpreterStatus interpreterStatus = InterpreterStatus.NOT_STARTED; // Interpreter status
   private UiUpdateStatus uiUpdateStatus = UiUpdateStatus.NOT_STARTED; // Ui Updater status
-  private ConcurrentLinkedQueue<boolean[][]> uiOutputQueue = new ConcurrentLinkedQueue<>(); // Output grid queue
-  private Block[][] outputGrid = new Block[gridSize][gridSize]; // Output grid
+  private final ConcurrentLinkedQueue<boolean[][]> uiOutputQueue = new ConcurrentLinkedQueue<>(); // Output grid queue
+  private final Block[][] outputGrid = new Block[gridSize][gridSize]; // Output grid
 
   private Interpreter interpreter; // Interpreter
-  private UiUpdater uiUpdater; // Ui Updater
 
   private Button runButton; // Run Button
   private TextArea codeArea; // Input area for code
@@ -117,7 +114,7 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
       interpreter = new Interpreter(MenuScreen.this, gridSize, code);
       interpreter.start();
 
-      uiUpdater = new UiUpdater(this, outputGrid, gridSize, uiOutputQueue);
+      UiUpdater uiUpdater = new UiUpdater(this, outputGrid, gridSize, uiOutputQueue);
       uiUpdater.start();
     }
   }
@@ -127,6 +124,7 @@ public class MenuScreen extends VBox implements Interpreter.InterpreterInterface
     Log.print("MS : Clear button click");
     for (int x = 0; x < gridSize; x++) {
       for (int y = 0; y < gridSize; y++) {
+        boolean WHITE_BACKGROUND = false;
         outputGrid[x][y].setColour(WHITE_BACKGROUND);
       }
     }

@@ -5,12 +5,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-public class UiUpdater extends Thread {
+class UiUpdater extends Thread {
 
   private double oldX;
   private double oldY;
   private boolean running;
-  private VBox canvas;
+  private final VBox canvas;
 
   private int t = 0;
   private double R = 0;

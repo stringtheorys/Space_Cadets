@@ -7,9 +7,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
-public class Block extends TextField {
-
-  private int size = 20;
+class Block extends TextField {
 
   public Block() {
 
@@ -20,6 +18,7 @@ public class Block extends TextField {
       }
     });
 
+    int size = 20;
     setMinWidth(size);
     setMaxWidth(size);
     setMinHeight(size);

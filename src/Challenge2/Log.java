@@ -5,9 +5,8 @@ package Challenge2;
 // But actived quickly and easily
 class Log {
 
-  private static boolean printing = false;
-
   static void print(String line) {
+    boolean printing = false;
     if (printing) {
       System.out.println(line);
     }

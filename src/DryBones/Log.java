@@ -1,9 +1,9 @@
 package DryBones;
 
-public class Log {
+class Log {
 
-  public static boolean lexerDebug = false;
-  public static boolean newTokenDebug = true;
+  private static final boolean lexerDebug = false;
+  private static final boolean newTokenDebug = true;
 
   public static void lexerPrint(String text) {
     if (lexerDebug) {

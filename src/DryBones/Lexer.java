@@ -3,7 +3,7 @@ package DryBones;
 import java.util.ArrayList;
 
 // Lexer class
-public class Lexer {
+class Lexer {
 
   private static final char EOF = 0;
 
@@ -19,10 +19,10 @@ public class Lexer {
   private final char[] validCharactersAfterNumber = ("+-*/ ()" + EOF).toCharArray();
 
   // Attributes
-  private String code; // Code text
+  private final String code; // Code text
   private int position; // Code position
   private char currentChar; // current character in the text
-  private int codeLength; // The length of code
+  private final int codeLength; // The length of code
 
   // Constructor
   public Lexer(String newCode) {
