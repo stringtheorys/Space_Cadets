@@ -24,6 +24,7 @@ class MainScene extends VBox {
         "All Circles",
         "Coloured Circles"
     );
+    options.setValue("Normal Color");
     options.valueProperty().addListener((observable, oldValue, newValue) ->
       optionChange(newValue)
     );
